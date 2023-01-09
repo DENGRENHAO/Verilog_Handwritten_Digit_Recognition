@@ -79,9 +79,10 @@ def predict(window):
         # plot_img(img_resized)
         output_image_file(img_resized, 'hex_img.hex')
         os.system("iverilog -o ./verilog/nn_recognize ./verilog/nn_recognize.v")
-        stream = os.popen("vvp ./verilog/nn_recognize")
+        stream = os.popen("vvp ./verilog/nn_recognize -lxt2")
         output = stream.read()
-        return output
+        os.system("gtkwave ./verilog/nn_recognize.vcd")
+        return output[-2]
     except:
         return -1
 

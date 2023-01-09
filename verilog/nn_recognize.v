@@ -49,6 +49,8 @@ module nn_recognize();
     reg start_nn_cal;
     
     initial begin
+        $dumpfile("./verilog/nn_recognize.vcd");
+        $dumpvars(0, nn_recognize);
         CLK = 0;
         next_state = 0;
         state = 0;
@@ -115,6 +117,7 @@ module nn_recognize();
         end
         finish_read = 1;
         start_nn_cal = 1;
+        predicted_digit = 0;
     end
     
     always begin
@@ -211,16 +214,18 @@ module nn_recognize();
             end
             5: begin
                 max_value = -1000.0;
-                predicted_digit = 0;
                 for(i = 0; i < 10; i = i + 1) begin
                     if(x2[i] > max_value) begin
                         max_value = x2[i];
                         predicted_digit = i;
                     end
                 end
-                $display("%d", predicted_digit);
-		$finish;
                 next_state = 6;
+            end
+            6: begin
+                $display("%d", predicted_digit);
+		        $finish;
+                next_state = 7;
             end
         endcase
     end
